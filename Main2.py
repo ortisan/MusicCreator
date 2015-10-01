@@ -13,13 +13,9 @@ sc = stream.Score()
 p1 = stream.Part()
 p1.id = 'part1'
 
-p2 = stream.Part()
-p2.id = 'part2'
-
-cadencias = [[1, 3, 0], [1, 0, 3]]
+cadencias = [[1, 3, 0], [0, 4, 0, 3], [3, 0]]
 len_cadencias = len(cadencias)
 quarter_lengths = [.5, .25]
-total = 16
 
 if __name__ == '__main__':
 
@@ -39,33 +35,40 @@ if __name__ == '__main__':
 
     for i in range(0, num_sequencias):
         cadencia = cadencias[random.randint(0, len_cadencias - 1)]
-
-        num_times = [8, 3, 5]
-
         for i in range(0, len(cadencia)):
             chor = copy.deepcopy(chords[cadencia[i]])
-            num_notas = num_times[i]
+            chor.root
 
-            pitches = chor.pitches
+            chor.quarterLength = 1
+            p1.append(chor)
 
-            for i in range(0, len(pitches)):
-                idx_pitch = random.randint(0, len(pitches) - 1)
-                note = note_mus21.Note(pitches[idx_pitch])
-                note.quarterLength = .25
-                p1.append(note)
+        res = note_mus21.Rest()
+        res.quarterLength = .5
+        p1.append(res)
 
-            #root_note = note_mus21.Note(chor.root())
-            #root_note.quarterLength = .25
-            #p1.repeatAppend(root_note, num_notas)
+        pitches = chor.pitches
 
-            chor.quarterLength = num_notas * .5
-            p2.append(chor)
+        # Sorteia o numero de notas que serao melodicas
+        num_notes = random.randint(3, 6)
+
+        for i in range(0, num_notes):
+            n1 = random.randint(0, 2)
+            note = copy.deepcopy(note_mus21.Note(pitches[n1]))
+            idx_factor_duration = random.randint(0, 1)
+            # duracao da nota sera dinamica variando em 0.5 a 0.75
+            q_length = quarter_lengths[idx_factor_duration]
+            note.quarterLength = q_length
+            p1.append(note)
+
+        res = note_mus21.Rest()
+        res.quarterLength = .5
+        p1.append(res)
 
     sc.insert(0, p1)
-    sc.insert(0, p2)
     sc.show()
 
     mf = midi.translate.streamToMidiFile(sc)
     mf.open("music.midi", "wb")
     mf.write()
     mf.close
+
