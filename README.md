@@ -1,10 +1,10 @@
-# Criador tosco de músicas
-Projeto utiliza a biblioteca music21 pra criar músicas a partir de cadências e notas melódicas randomizadas.
+# Criador tosco de mÃºsicas
+Projeto utiliza a biblioteca music21 pra criar mÃºsicas a partir de cadÃªncias e notas melÃ³dicas randomizadas.
 
-## Instalação
+## InstalaÃ§Ã£o
 pip install -r requirements.txt
  
-## Execução
+## ExecuÃ§Ã£o
 python Main.py
 
 

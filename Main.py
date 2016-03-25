@@ -18,8 +18,7 @@ p2.id = 'part2'
 
 cadencias = [[1, 3, 0], [1, 0, 3]]
 len_cadencias = len(cadencias)
-quarter_lengths = [.5, .25]
-total = 16
+fator_velocidade = [1, 2]
 
 if __name__ == '__main__':
 
@@ -40,32 +39,33 @@ if __name__ == '__main__':
     for i in range(0, num_sequencias):
         cadencia = cadencias[random.randint(0, len_cadencias - 1)]
 
-        num_times = [8, 3, 5]
+        num_notas_array = [8, 3, 5]
 
         for i in range(0, len(cadencia)):
             chor = copy.deepcopy(chords[cadencia[i]])
-            num_notas = num_times[i]
-
-            pitches = chor.pitches
-
-            for i in range(0, len(pitches)):
-                idx_pitch = random.randint(0, len(pitches) - 1)
-                note = note_mus21.Note(pitches[idx_pitch])
-                note.quarterLength = .25
-                p1.append(note)
-
-            #root_note = note_mus21.Note(chor.root())
-            #root_note.quarterLength = .25
-            #p1.repeatAppend(root_note, num_notas)
-
+            num_notas = num_notas_array[i]
             chor.quarterLength = num_notas * .5
             p2.append(chor)
 
-    sc.insert(0, p1)
+            # Obtemos as notas do acorde
+            pitches = chor.pitches
+            # Iteramos as notas do acorde pra a melodia
+
+            velocidade_notas = random.randint(1, 2)
+
+            for i_notas in range(0, num_notas * velocidade_notas):
+                idx_pitch = random.randint(0, len(pitches) - 1)
+                note = note_mus21.Note(pitches[idx_pitch])
+                note.quarterLength = 0.5 / velocidade_notas
+                p1.append(note)
+
     sc.insert(0, p2)
-    sc.show()
+    sc.insert(0, p1)
+    # sc.show()
 
     mf = midi.translate.streamToMidiFile(sc)
-    mf.open("music.midi", "wb")
+    import datetime
+
+    mf.open(('%s.midi' % datetime.datetime.now().strftime("%Y%m%d%H%M%S")), "wb")
     mf.write()
     mf.close
