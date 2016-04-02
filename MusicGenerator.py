@@ -90,7 +90,11 @@ class MusicGenerator(object):
         mf.write()
         mf.close
 
+        # sp = midi.realtime.StreamPlayer(score)
+        # sp.play()
+
 
 if __name__ == '__main__':
     mgen = MusicGenerator()
+    mgen.gen_midi_of_cadences()
     mgen.generate()

@@ -7,7 +7,11 @@ pip install -r requirements.txt
 ## Execução
 python MusicGenerator.py
 
+## Avaliação das cadências
+python app_web.py
+
+* [Link](http://localhost:5000)
 
 ## TODO
-Avaliar as cadências mais interessantes por usuário e combina-las. (AG)
+Utilizar as cadências mais populares para um usuário e gerar uma música.
 
