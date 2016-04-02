@@ -1,2 +1,4 @@
-*.midi
 /.idea
+.DS_store
+*.pyc
+*.midi
