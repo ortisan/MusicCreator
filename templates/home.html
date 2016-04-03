@@ -11,7 +11,7 @@
 
 <h1>Choose the nice cadences</h1>
 
-<table>
+<table class="table table-striped">
     {% for item in midi_items %}
     <tr>
         <td>
@@ -20,8 +20,14 @@
             </a>
         </td>
         <td>
-            <a class='btn btn-link' href="{{ item.liked_link }}">
+            <a class='btn btn-link' href="{{ item.like_link }}">
                 <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span> Like
+            </a>
+        </td>
+
+        <td>
+            <a class='btn btn-link' href="{{ item.dislike_link }}">
+                <span class="glyphicon glyphicon-thumbs-down" aria-hidden="true"></span> Dislike
             </a>
         </td>
 
