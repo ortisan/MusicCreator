@@ -1,4 +1,9 @@
 music21==2.0.5
-pydub
-behave
 Flask
+numpy
+scipy
+matplotlib
+pandas
+ipython
+jupyter
+behave

@@ -6,7 +6,7 @@ from music21 import midi
 from music21 import note as note_mus21
 from music21 import stream
 
-from CadenceGenerator import CadenceGenerator
+from core.CadencesUtil import CadencesUtil
 
 
 class MusicGenerator(object):
@@ -29,7 +29,7 @@ class MusicGenerator(object):
 
     def gen_midi_of_cadences(self):
         # TODO
-        cadence_generator = CadenceGenerator()
+        cadence_generator = CadencesUtil()
         cadences = cadence_generator.generate()
 
         for cadence in cadences:
@@ -48,7 +48,7 @@ class MusicGenerator(object):
             mf.close
 
     def generate(self):
-        cadence_generator = CadenceGenerator()
+        cadence_generator = CadencesUtil()
         cadences = cadence_generator.generate()
         len_cadences = len(cadences)
         num_sequencias = 8

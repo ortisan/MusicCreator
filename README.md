@@ -12,6 +12,21 @@ python app_web.py
 
 * [Link](http://localhost:5000)
 
+## Inicio da análise para identificar padrões entre as distâncias das notas entre as cadências.
+
+```
+ipython notebook
+```
+
+ou
+ 
+```
+/usr/bin/python2.7 /usr/local/bin/ipython notebook --ip 127.0.0.1 --port 8888
+```
+
+* Carregar o arquivo [analysis/AnaliseInicial.ipynb](http://127.0.0.1:8888/notebooks/analysis/CadencesPreferences.ipynb):
+
+
 ## TODO
 Utilizar as cadências mais populares para um usuário e gerar uma música.
 
