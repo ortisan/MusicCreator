@@ -49,7 +49,8 @@ class MusicGenerator(object):
 
     def generate(self):
         cadence_generator = CadencesUtil()
-        cadences = cadence_generator.generate()
+        # cadences = cadence_generator.generate()
+        cadences = cadence_generator.getLikesCadences()
         len_cadences = len(cadences)
         num_sequencias = 8
         score = stream.Score()
@@ -96,5 +97,5 @@ class MusicGenerator(object):
 
 if __name__ == '__main__':
     mgen = MusicGenerator()
-    mgen.gen_midi_of_cadences()
+    # mgen.gen_midi_of_cadences()
     mgen.generate()

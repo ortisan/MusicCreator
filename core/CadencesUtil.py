@@ -1,8 +1,8 @@
 from itertools import product
 import random
 
-class CadencesUtil(object):
 
+class CadencesUtil(object):
     def generate(self, size=3, sample_rate=1):
         assert size >= 2
         assert sample_rate <= 1 and sample_rate > 0
@@ -13,9 +13,21 @@ class CadencesUtil(object):
         sample_of_cadences = [list_cadences[i] for i in sorted(random.sample(xrange(total_cases), number_samples))]
         return sample_of_cadences
 
+    def getLikesCadences(self):
+        cadences = []
+        import re
+        with open('like_midis.csv', 'r') as f:
+            for line in f.readlines():
+                cadence_search = re.search('cad(\d+(-\d)+)\.midi', line, re.IGNORECASE)
+                if cadence_search:
+                    cadence_str = cadence_search.group(1)
+                    cadence = [int(x) for x in cadence_str.split('-')]
+                    cadences.append(cadence)
+        return cadences
+
     def getDataframeFromCsvLikeDislike(self, path_file):
         likes_dislikes = []
-        cadences_str =[]
+        cadences_str = []
         import re
         import pandas as pd
         with open(path_file, 'r') as f:
@@ -35,5 +47,3 @@ class CadencesUtil(object):
         likes_dislikes_df = pd.DataFrame(likes_dislikes)
         likes_dislikes_df.set_index(cadences_str)
         return likes_dislikes_df
-
-
