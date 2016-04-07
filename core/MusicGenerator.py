@@ -70,10 +70,9 @@ class MusicGenerator(object):
 
                 # Obtemos as notas do acorde
                 pitches = chor.pitches
-                # Iteramos as notas do acorde pra a melodia
 
                 velocidade_notas = random.randint(1, 2)
-
+                # Iteramos as notas do acorde pra a melodia
                 for i_notas in range(0, num_notas * velocidade_notas):
                     idx_pitch = random.randint(0, len(pitches) - 1)
                     note = note_mus21.Note(pitches[idx_pitch])

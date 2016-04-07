@@ -15,7 +15,7 @@ python app_web.py
 ## Inicio da análise para identificar padrões entre as distâncias das notas entre as cadências.
 
 ```
-ipython notebook
+ipython notebook --notebook-dir=<PATH_PROJETO>
 ```
 
 ou
