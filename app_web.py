@@ -4,14 +4,16 @@ app = Flask(__name__, static_folder='cadences')
 import os
 import csv
 from random import shuffle
+from core.CadencesUtil import CadencesUtil
 
 
 class MIDIItem(object):
-    def __init__(self, name, midi_link, like_link, dislike_link):
+    def __init__(self, name, midi_link, like_link, dislike_link, predic=0):
         self.name = name
         self.midi_link = midi_link
         self.like_link = like_link
         self.dislike_link = dislike_link
+        self.predict = predic
 
 
 @app.route('/')
@@ -19,6 +21,11 @@ def index():
     from os import listdir
     from os.path import isfile, join
     items = []
+
+    # cadenceUtil  = CadencesUtil()
+    # cadenceUtil.learnFromDataset()
+
+
     for f in listdir('cadences'):
         if isfile(join('cadences', f)) and f.endswith('.midi'):
             midi_item = MIDIItem(f, url_for('static', filename=f), ('/like/%s' % f), ('/dislike/%s' % f))
