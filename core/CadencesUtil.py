@@ -11,7 +11,7 @@ from Configs import Configs
 
 
 class CadencesUtil(object):
-    MODEL_CLF = Configs.get_project_home() + '/model/cadence_clf.pkl'
+    MODEL_CLF = '%s/model/cadence_clf.pkl' % Configs.get_project_home()
 
     @classmethod
     def extractDistancesFromCadence(cls, filename):
@@ -43,7 +43,7 @@ class CadencesUtil(object):
     def getLikesCadences(self):
         cadences = []
         import re
-        with open(Configs.get_project_home() + 'like_midis.csv', 'r') as f:
+        with open('%s/like_midis.csv' % Configs.get_project_home(), 'r') as f:
             for line in f.readlines():
                 cadence_search = re.search('cad(\d+(-\d)+)\.midi', line, re.IGNORECASE)
                 if cadence_search:

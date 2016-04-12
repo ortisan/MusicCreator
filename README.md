@@ -2,6 +2,9 @@
 Projeto utiliza a biblioteca music21 pra criar músicas a partir de cadências e notas melódicas randomizadas.
 
 ## Instalação
+
+Criar e exportar variável de ambiente $MUSIC_PROJECT_HOME
+
 pip install -r requirements.txt
  
 ## Execução

@@ -87,7 +87,7 @@ class MusicGenerator(object):
         mf = midi.translate.streamToMidiFile(score)
         import datetime
 
-        mf.open(('%s/musics/%s.midi' % Configs.get_project_home(), datetime.datetime.now().strftime("%Y%m%d%H%M%S")),
+        mf.open(('%s/musics/%s.midi' % (Configs.get_project_home(), datetime.datetime.now().strftime("%Y%m%d%H%M%S"))),
                 "wb")
         mf.write()
         mf.close
