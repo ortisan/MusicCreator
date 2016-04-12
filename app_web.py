@@ -5,15 +5,16 @@ import os
 import csv
 from random import shuffle
 from core.CadencesUtil import CadencesUtil
+import numpy as np
 
 
 class MIDIItem(object):
-    def __init__(self, name, midi_link, like_link, dislike_link, predic=0):
+    def __init__(self, name, midi_link, like_link, dislike_link, predict=0):
         self.name = name
         self.midi_link = midi_link
         self.like_link = like_link
         self.dislike_link = dislike_link
-        self.predict = predic
+        self.predict = predict
 
 
 @app.route('/')
@@ -22,13 +23,16 @@ def index():
     from os.path import isfile, join
     items = []
 
-    # cadenceUtil  = CadencesUtil()
-    # cadenceUtil.learnFromDataset()
-
+    cadenceUtil = CadencesUtil()
+    cadenceUtil.learnFromDataset()
 
     for f in listdir('cadences'):
         if isfile(join('cadences', f)) and f.endswith('.midi'):
-            midi_item = MIDIItem(f, url_for('static', filename=f), ('/like/%s' % f), ('/dislike/%s' % f))
+            cadence_str, intervals, distances = CadencesUtil.extractDistancesFromCadence(f)
+            dist_array = np.ndarray(buffer=np.array(distances, dtype=int), shape=(1, 2), dtype=int)
+            predict = cadenceUtil.classify(dist_array)[0]
+            midi_item = MIDIItem(f, url_for('static', filename=f), ('/like/%s' % f), ('/dislike/%s' % f),
+                                 predict=predict)
             items.append(midi_item)
 
     shuffle(items)

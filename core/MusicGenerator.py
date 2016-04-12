@@ -7,6 +7,7 @@ from music21 import note as note_mus21
 from music21 import stream
 
 from core.CadencesUtil import CadencesUtil
+from core.Configs import Configs
 
 
 class MusicGenerator(object):
@@ -43,7 +44,7 @@ class MusicGenerator(object):
             score.insert(0, part)
 
             mf = midi.translate.streamToMidiFile(score)
-            mf.open(('cadences/cad%s.midi' % '-'.join(str(e) for e in cadence)), "wb")
+            mf.open(('%s/cadences/cad%s.midi' % Configs.get_project_home(), '-'.join(str(e) for e in cadence)), "wb")
             mf.write()
             mf.close
 
@@ -86,7 +87,8 @@ class MusicGenerator(object):
         mf = midi.translate.streamToMidiFile(score)
         import datetime
 
-        mf.open(('musics/%s.midi' % datetime.datetime.now().strftime("%Y%m%d%H%M%S")), "wb")
+        mf.open(('%s/musics/%s.midi' % Configs.get_project_home(), datetime.datetime.now().strftime("%Y%m%d%H%M%S")),
+                "wb")
         mf.write()
         mf.close
 

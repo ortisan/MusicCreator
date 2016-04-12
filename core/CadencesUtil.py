@@ -1,16 +1,30 @@
 import os.path
 import random
-from itertools import product
+import re
+from itertools import product, combinations_with_replacement
 
+import numpy as np
 import pandas as pd
 from sklearn.externals import joblib
-from sklearn.multiclass import OutputCodeClassifier
-from sklearn.svm import LinearSVC
-
+from sklearn.linear_model import Perceptron
+from Configs import Configs
 
 
 class CadencesUtil(object):
-    MODEL_CLF = '../model/cadence_clf.pkl'
+    MODEL_CLF = Configs.get_project_home() + '/model/cadence_clf.pkl'
+
+    @classmethod
+    def extractDistancesFromCadence(cls, filename):
+        cadence_search = re.search('cad(\d+(-\d)+)\.midi', filename, re.IGNORECASE)
+        if cadence_search:
+            cadence_str = cadence_search.group(1)
+            intervals = [int(interval) for interval in cadence_str.split('-')]
+            # distances from intervals
+            distances = [(interval - intervals[i + 1]) * -1 for i, interval in enumerate(intervals) if
+                         i + 1 < len(intervals)]
+            return cadence_str, intervals, distances
+        else:
+            raise Exception('Invalid file name')
 
     def __init__(self):
         if os.path.isfile(CadencesUtil.MODEL_CLF):
@@ -29,7 +43,7 @@ class CadencesUtil(object):
     def getLikesCadences(self):
         cadences = []
         import re
-        with open('like_midis.csv', 'r') as f:
+        with open(Configs.get_project_home() + 'like_midis.csv', 'r') as f:
             for line in f.readlines():
                 cadence_search = re.search('cad(\d+(-\d)+)\.midi', line, re.IGNORECASE)
                 if cadence_search:
@@ -40,42 +54,37 @@ class CadencesUtil(object):
 
     def getDataframeFromCsvLikeDislike(self, path_file):
         likes_dislikes = []
-        import re
-
         with open(path_file, 'r') as f:
             for line in f.readlines():
-                cadence_search = re.search('cad(\d+(-\d)+)\.midi', line, re.IGNORECASE)
-                if cadence_search:
-                    cadence_str = cadence_search.group(1)
-                    cadence = [int(x) for x in cadence_str.split('-')]
-                    cadence_dict = {'{0}th'.format(i): val for i, val in enumerate(cadence)}
-                    cadence_dict['cadence'] = cadence_str
-                    # Calculando as distancias entre as notas
-                    ith_dist_cad = [(x - cadence[i + 1]) * -1 for i, x in enumerate(cadence) if i + 1 < len(cadence)]
-                    ith_dist_dict = {'dist_{0}th'.format(i): val for i, val in enumerate(ith_dist_cad)}
-                    cadence_dict.update(ith_dist_dict)
-                    likes_dislikes.append(cadence_dict)
-
+                cadence_str, intervals, distances = CadencesUtil.extractDistancesFromCadence(line)
+                cadence_dict = {'{0}th'.format(i): val for i, val in enumerate(distances)}
+                cadence_dict['cadence'] = cadence_str
+                ith_dist_dict = {'dist_{0}th'.format(i): val for i, val in enumerate(distances)}
+                cadence_dict.update(ith_dist_dict)
+                likes_dislikes.append(cadence_dict)
         likes_dislikes_df = pd.DataFrame(likes_dislikes)
 
         return likes_dislikes_df
 
     def learnFromDataset(self):
-        like_df = self.getDataframeFromCsvLikeDislike('../like_midis.csv')
-        like_df['like'] = 1
-        dislike_df = self.getDataframeFromCsvLikeDislike('../dislike_midis.csv')
-        dislike_df['like'] = 0
 
-        data_concat = pd.concat([like_df, dislike_df])
+        if os.path.isfile(Configs.get_project_home() + '/like_midis.csv') and os.path.isfile(
+                        Configs.get_project_home() + '/dislike_midis.csv'):
+            like_df = self.getDataframeFromCsvLikeDislike(Configs.get_project_home() + '/like_midis.csv')
+            like_df['like'] = 1
+            dislike_df = self.getDataframeFromCsvLikeDislike(Configs.get_project_home() + '/dislike_midis.csv')
+            dislike_df['like'] = 0
 
-        data_model = (data_concat[['dist_0th', 'dist_1th']]).as_matrix()
-        # Transforma o [[1],[2],[3]] em [1,2,3]
-        labels = (data_concat[['like']].astype('str')).as_matrix().ravel()
+            data_concat = pd.concat([like_df, dislike_df])
 
-        self.clf = OutputCodeClassifier(LinearSVC(random_state=0), code_size=2, random_state=0)
-        self.clf.fit(data_model, labels)
+            data_model = (data_concat[['dist_0th', 'dist_1th']]).as_matrix()
+            # Transforma o [[1],[2],[3]] em [1,2,3]
+            labels = (data_concat[['like']].astype('str')).as_matrix().ravel()
 
-        joblib.dump(self.clf, CadencesUtil.MODEL_CLF)
+            self.clf = Perceptron()
+            self.clf.fit(data_model, labels)
+
+            joblib.dump(self.clf, CadencesUtil.MODEL_CLF)
 
     def classify(self, rows):
         assert (self.clf is not None), "Model must be initialized"
@@ -84,6 +93,12 @@ class CadencesUtil(object):
 
 if __name__ == '__main__':
     cadence = CadencesUtil()
-    cadence.getDataframeFromCsvLikeDislike('../like_midis.csv')
-
     cadence.learnFromDataset()
+
+    combinations = combinations_with_replacement([1, 2, 3, 4, 5], 2)
+
+    x = np.array(list(combinations), dtype=int)
+    print cadence.classify(x)
+
+    y = np.ndarray(buffer=np.array([1, 1]), shape=(1, 2))
+    print cadence.classify(y)
